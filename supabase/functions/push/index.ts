@@ -9,7 +9,7 @@ import {
 // fcm_notifications 테이블의 레코드를 나타내는 인터페이스
 interface UserNotificationRecord {
     id: string;
-    user_id: string;
+    user_id: number;
     title: string | null;
     body: string | null;
 }
@@ -40,7 +40,10 @@ Deno.serve(async (req) => {
 
     // FCM 토큰이 없거나 오류가 발생한 경우 처리
     if (error || !data || data.length === 0) {
-        console.error("Error fetching FCM tokens:", error || "No FCM tokens found");
+        console.error(
+            "Error fetching FCM tokens:",
+            error || "No FCM tokens found",
+        );
         await updateNotificationResult(
             payload.record.id,
             completedAt,
@@ -92,7 +95,9 @@ Deno.serve(async (req) => {
             payload.record.id,
             completedAt,
             resultSummary,
-        ).catch((err) => console.error("Error updating notification result:", err));
+        ).catch((err) =>
+            console.error("Error updating notification result:", err)
+        );
 
         return new Response(JSON.stringify({ results }), {
             headers: { "Content-Type": "application/json" },
@@ -195,9 +200,12 @@ const updateNotificationResult = async (
 ) => {
     try {
         const { error } = await supabase
-        .from("fcm_notifications")
-        .update({ completed_at: completedAt, result: JSON.stringify(result) })
-        .eq("id", id);
+            .from("fcm_notifications")
+            .update({
+                completed_at: completedAt,
+                result: JSON.stringify(result),
+            })
+            .eq("id", id);
 
         if (error) {
             console.error("Error updating notification result:", error);
