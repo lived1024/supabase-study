@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
     const { data, error } = await supabase
         .from("users")
         .select("fcm_token")
-        .eq("id", payload.record.user_id);
+        .eq("user_id", payload.record.user_id);
 
     const completedAt = new Date().toISOString();
 
@@ -207,7 +207,7 @@ const updateNotificationResult = async (
             })
             .eq("id", id);
 
-        if (error) {
+        if (error && Object.keys(error).length > 0) { 
             console.error("Error updating notification result:", error);
             throw error;
         }
